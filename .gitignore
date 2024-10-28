@@ -1,0 +1,6 @@
+.idea/
+docker-compose.yml
+service.env
+.DS_Store
+linters.sh
+revive.toml

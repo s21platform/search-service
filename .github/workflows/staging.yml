@@ -1,0 +1,91 @@
+name: Dev CI/CD to Development server
+on:
+  pull_request:
+    branches:
+      - main
+
+
+jobs:
+  linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.22
+
+      - name: Install golangci-lint
+        run: |
+          go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+      - name: Run golangci-lint
+        run: |
+          golangci-lint run
+
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    needs: linters
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.22
+
+      - name: Run tests
+        run: go test -coverprofile=coverage.out -tags=test -v ./...
+
+      #      - name: Check coverage
+      #        run: |
+      #          go tool cover -func=coverage.out -o=coverage.txt
+      #          coverage=$(go tool cover -func=coverage.out | grep total | awk '{print substr($3, 1, length($3)-1)}')
+      #          echo "Coverage is $coverage%"
+      #          if (( $(echo "$coverage < 80.0" | bc -l) )); then
+      #          echo "Coverage is below 80%"
+      #          exit 1
+      #          fi
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage.txt
+  build_and_push:
+    name: Build and Push Image to YC
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+      - name: Yandex CR Login
+        uses: yc-actions/yc-cr-login@v0.1-alpha
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_KEY }}
+      - name: Build and Push to YC
+        run: |
+          docker build -t ${{ secrets.CR_REGISTRY }}/${{ secrets.CR_NAME }}:develop .
+          docker push ${{ secrets.CR_REGISTRY }}/${{ secrets.CR_NAME }}:develop
+          docker build -t ${{ secrets.CR_REGISTRY }}/${{ secrets.CR_NAME }}-migrate:develop ./migrations
+          docker push ${{ secrets.CR_REGISTRY }}/${{ secrets.CR_NAME }}-migrate:develop
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build_and_push
+    steps:
+      - name: executing remote ssh commands to deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DEVELOP }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.PRIVATE_SSH_KEY_DEVELOP }}
+          passphrase: ${{ secrets.PASSPHRASE_DEVELOP }}
+          script: |
+            docker pull ${{ secrets.CR_REGISTRY }}/${{ secrets.CR_NAME }}:develop
+            docker-compose -f ~/space21/staging/staging-deployment/docker-compose.yml --env-file ~/space21/staging/.env up -d ${{ secrets.CR_NAME }}
