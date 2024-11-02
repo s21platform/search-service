@@ -1,4 +1,4 @@
-module github.com/s21platform/search-service.git
+module github.com/s21platform/search-service
 
 go 1.23.0
 
