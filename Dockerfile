@@ -7,7 +7,7 @@ COPY go.sum .
 RUN go mod download
 COPY . .
 
-RUN go build -o build/kafka cmd/workers/notification/main.go
+RUN #go build -o build/kafka cmd/workers/notification/main.go
 RUN go build -o build/main cmd/service/main.go
 
 FROM alpine
@@ -20,7 +20,7 @@ RUN apk add --no-cache gcompat
 
 # RUN ls -l /app/
 COPY --from=builder /usr/src/service ./scripts
-COPY --from=builder /usr/src/service/build/kafka .
+#COPY --from=builder /usr/src/service/build/kafka .
 
 #CMD ["/app/main","/app/kafka"]
 

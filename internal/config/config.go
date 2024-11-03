@@ -13,7 +13,6 @@ const KeyMetrics = key("metrics")
 
 type Config struct {
 	Service  Service
-	Postgres ReadEnvBD
 	Metrics  Metrics
 	Platform Platform
 }
@@ -21,14 +20,6 @@ type Config struct {
 type Service struct {
 	Port string `env:"SEARCH_SERVICE_PORT"`
 	Host string `env:"SEARCH_SERVICE_HOST"`
-}
-
-type ReadEnvBD struct {
-	User     string `env:"SEARCH_SERVICE_POSTGRES_USER"`
-	Password string `env:"SEARCH_SERVICE_POSTGRES_PASSWORD"`
-	Database string `env:"SEARCH_SERVICE_POSTGRES_DB"`
-	Host     string `env:"SEARCH_SERVICE_POSTGRES_HOST"`
-	Port     string `env:"SEARCH_SERVICE_POSTGRES_PORT"`
 }
 
 type Metrics struct {

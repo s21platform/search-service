@@ -1,10 +1,8 @@
-module github.com/s21platform/search-service.git
+module github.com/s21platform/search-service
 
-go 1.23.0
+go 1.22.8
 
-require (
-	github.com/ilyakaznacheev/cleanenv v1.5.0
-)
+require github.com/ilyakaznacheev/cleanenv v1.5.0
 
 require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
