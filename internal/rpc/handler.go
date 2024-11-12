@@ -60,9 +60,19 @@ func (h *Handler) GetSociety(ctx context.Context, in *search.GetSocietyIn) (*sea
 			return strings.Contains(strings.ToLower(society.Name), strings.ToLower(in.PartName))
 		})
 	}
+	total := int64(len(societies))
+	start := in.Offset
+	end := in.Offset + in.Limit
+
+	if start > total {
+		start = total
+	}
+	if end > total {
+		end = total
+	}
 
 	return &search.GetSocietyOut{
-		Societies: societies[in.Offset : in.Limit+in.Offset],
-		Total:     int64(len(societies)),
+		Societies: societies[start:end],
+		Total:     total,
 	}, nil
 }
