@@ -2,9 +2,10 @@ package rpc
 
 import (
 	"context"
+	"strings"
+
 	"github.com/s21platform/search-proto/search"
 	"github.com/samber/lo"
-	"strings"
 )
 
 type Handler struct {

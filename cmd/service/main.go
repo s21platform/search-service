@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net"
+
 	"github.com/s21platform/search-proto/search"
 	"github.com/s21platform/search-service/internal/config"
 	"github.com/s21platform/search-service/internal/rpc"
 	"google.golang.org/grpc"
-	"log"
-	"net"
 )
 
 func main() {
