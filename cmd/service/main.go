@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/s21platform/search-service/internal/infra"
 	"log"
 	"net"
 
@@ -15,7 +16,9 @@ func main() {
 	cfg := config.MustLoad()
 
 	service := rpc.New()
-	server := grpc.NewServer()
+	server := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(
+			infra.UnaryInterceptor))
 	search.RegisterSearchServiceServer(server, service)
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.Service.Port))
