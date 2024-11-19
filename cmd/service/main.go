@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/s21platform/search-service/internal/infra"
 	"log"
 	"net"
+
+	"github.com/s21platform/search-service/internal/infra"
 
 	"github.com/s21platform/search-proto/search"
 	"github.com/s21platform/search-service/internal/config"
