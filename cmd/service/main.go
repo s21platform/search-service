@@ -19,7 +19,7 @@ func main() {
 	service := rpc.New()
 	server := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
-			infra.UnaryInterceptor))
+			infra.Verification))
 	search.RegisterSearchServiceServer(server, service)
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.Service.Port))
