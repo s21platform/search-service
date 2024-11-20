@@ -5,6 +5,8 @@ import (
 	"log"
 	"net"
 
+	"github.com/s21platform/search-service/internal/infra"
+
 	"github.com/s21platform/search-proto/search"
 	"github.com/s21platform/search-service/internal/config"
 	"github.com/s21platform/search-service/internal/rpc"
@@ -15,7 +17,9 @@ func main() {
 	cfg := config.MustLoad()
 
 	service := rpc.New()
-	server := grpc.NewServer()
+	server := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(
+			infra.Verification))
 	search.RegisterSearchServiceServer(server, service)
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.Service.Port))
