@@ -90,9 +90,9 @@ func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLi
 	if err != nil {
 		return nil, fmt.Errorf("error h.users.GetUserWithOffset: %w", err)
 	}
-	var usersSr []*search.User
+	var usersSr []*search.UserSr
 	for _, u := range usersUs.User {
-		usersSr = append(usersSr, &search.User{
+		usersSr = append(usersSr, &search.UserSr{
 			Nickname:   u.Nickname,
 			Uuid:       u.Uuid,
 			AvatarLink: u.AvatarLink,
