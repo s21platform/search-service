@@ -11,8 +11,8 @@ import (
 )
 
 type Handler struct {
-	search search.UnimplementedSearchServiceServer
-	users  users.UnimplementedUserServiceServer
+	search.UnimplementedSearchServiceServer
+	users.UnimplementedUserServiceServer
 }
 
 func New() *Handler {
@@ -82,7 +82,7 @@ func (h *Handler) GetSociety(ctx context.Context, in *search.GetSocietyIn) (*sea
 }
 
 func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLimitIn) (*search.GetUserWithLimitOut, error) {
-	usersUs, err := h.users.GetUserWithOffset(ctx, &users.GetUserWithOffsetIn{
+	usersUs, err := h.GetUserWithOffset(ctx, &users.GetUserWithOffsetIn{
 		Limit:    in.Limit,
 		Offset:   in.Offset,
 		Nickname: in.Nickname,
