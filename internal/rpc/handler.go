@@ -12,7 +12,7 @@ import (
 
 type Handler struct {
 	search.UnimplementedSearchServiceServer
-	users.UnimplementedUserServiceServer
+	users users.UserServiceClient
 }
 
 func New() *Handler {
@@ -82,26 +82,28 @@ func (h *Handler) GetSociety(ctx context.Context, in *search.GetSocietyIn) (*sea
 }
 
 func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLimitIn) (*search.GetUserWithLimitOut, error) {
-	usersUs, err := h.GetUserWithOffset(ctx, &users.GetUserWithOffsetIn{
+	fmt.Println("start offset")
+
+	us := &users.GetUserWithOffsetIn{
 		Limit:    in.Limit,
 		Offset:   in.Offset,
 		Nickname: in.Nickname,
-	})
+	}
+
+	userOffsetOut, err := h.users.GetUserWithOffset(ctx, us)
+
+	fmt.Println("End GET USER LIMIT before err")
+
 	if err != nil {
-		return nil, fmt.Errorf("error h.users.GetUserWithOffset: %w", err)
+		return nil, fmt.Errorf("error in GetUserWithOffset: %w", err)
 	}
-	var usersSr []*search.UserSr
-	for _, u := range usersUs.User {
-		usersSr = append(usersSr, &search.UserSr{
-			Nickname:   u.Nickname,
-			Uuid:       u.Uuid,
-			AvatarLink: u.AvatarLink,
-			Name:       u.Name,
-			Surname:    u.Surname,
-		})
+
+	if userOffsetOut == nil {
+		return nil, fmt.Errorf("userOffset is nil")
 	}
-	return &search.GetUserWithLimitOut{
-		Users: usersSr,
-		Total: usersUs.Total,
-	}, nil
+
+	fmt.Println("I TUT")
+	fmt.Println("userOffset:", userOffsetOut)
+
+	return nil, nil
 }
