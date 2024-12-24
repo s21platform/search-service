@@ -9,3 +9,7 @@ import (
 type userService interface {
 	GetUserWithOffset(ctx context.Context, limit, offset int64, nickName string) (*user_proto.GetUserWithOffsetOut, error)
 }
+
+type friendsService interface {
+	IsFriendsExist(ctx context.Context, uuid string) (bool, error)
+}
