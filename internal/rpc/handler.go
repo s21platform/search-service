@@ -11,11 +11,11 @@ import (
 
 type Handler struct {
 	search.UnimplementedSearchServiceServer
-	userS userS
+	uS userService
 }
 
-func New(users userS) *Handler {
-	return &Handler{userS: users}
+func New(uS userService) *Handler {
+	return &Handler{uS: uS}
 }
 
 func (h *Handler) GetSociety(ctx context.Context, in *search.GetSocietyIn) (*search.GetSocietyOut, error) {
@@ -81,15 +81,15 @@ func (h *Handler) GetSociety(ctx context.Context, in *search.GetSocietyIn) (*sea
 }
 
 func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLimitIn) (*search.GetUserWithLimitOut, error) {
-	userOffsetOut, err := h.userS.GetUserWithOffset(ctx, in.Limit, in.Offset, in.Nickname)
+	userOffsetOut, err := h.uS.GetUserWithOffset(ctx, in.Limit, in.Offset, in.Nickname)
 
 	if err != nil {
 		return nil, fmt.Errorf("error in GetUserWithOffset: %w", err)
 	}
 
-	var userOut []*search.UserSr
+	var usersOut []*search.UserSr
 	for _, user := range userOffsetOut.User {
-		userOut = append(userOut, &search.UserSr{
+		usersOut = append(usersOut, &search.UserSr{
 			Nickname:   user.Nickname,
 			Uuid:       user.Uuid,
 			AvatarLink: user.AvatarLink,
@@ -97,5 +97,5 @@ func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLi
 			Surname:    user.Surname,
 		})
 	}
-	return &search.GetUserWithLimitOut{Users: userOut, Total: userOffsetOut.Total}, nil
+	return &search.GetUserWithLimitOut{Users: usersOut, Total: userOffsetOut.Total}, nil
 }
