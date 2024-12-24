@@ -3,12 +3,13 @@ package user
 import (
 	"context"
 	"fmt"
-	"google.golang.org/grpc/metadata"
 	"log"
 
-	user_proto "github.com/s21platform/user-proto/user-proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
+
+	user_proto "github.com/s21platform/user-proto/user-proto"
 
 	"github.com/s21platform/search-service/internal/config"
 )
