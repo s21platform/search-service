@@ -23,7 +23,7 @@ func New(uS userService) *Handler {
 }
 
 func (h *Handler) GetSociety(ctx context.Context, in *search.GetSocietyIn) (*search.GetSocietyOut, error) {
-	societies := []*search.Society{
+	societies := []*search.SearchSociety{
 		{
 			Name:        "Тестовое сообщество 1",
 			Description: "Моковое сообщество",
@@ -63,7 +63,7 @@ func (h *Handler) GetSociety(ctx context.Context, in *search.GetSocietyIn) (*sea
 	}
 
 	if len(in.PartName) > 0 {
-		societies = lo.Filter(societies, func(society *search.Society, _ int) bool {
+		societies = lo.Filter(societies, func(society *search.SearchSociety, _ int) bool {
 			return strings.Contains(strings.ToLower(society.Name), strings.ToLower(in.PartName))
 		})
 	}
