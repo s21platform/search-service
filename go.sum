@@ -19,6 +19,8 @@ github.com/s21platform/search-proto v0.0.5 h1:EHclVsz/mVwY1bvzZaK87Stm1P3pes7K5V
 github.com/s21platform/search-proto v0.0.5/go.mod h1:mL1Jf2eqvWHPCefKdb/cjoXRI2Wg6hbHRLNeyw14SGk=
 github.com/s21platform/search-proto v0.0.6 h1:s3RINWTh9ZRZ6tadqO2B3Wk1kuDGtyCdQjp2LJD6PAI=
 github.com/s21platform/search-proto v0.0.6/go.mod h1:mL1Jf2eqvWHPCefKdb/cjoXRI2Wg6hbHRLNeyw14SGk=
+github.com/s21platform/search-proto v0.0.8 h1:TanxlPFKp7DQU785bwU0HAqiv58PUbCESjVy9GT4sKM=
+github.com/s21platform/search-proto v0.0.8/go.mod h1:mL1Jf2eqvWHPCefKdb/cjoXRI2Wg6hbHRLNeyw14SGk=
 github.com/s21platform/user-proto v0.0.11 h1:Y0eIBBlYsfFF+yRJEWClE8VJeqHjKgn0ge5a/1hkLA4=
 github.com/s21platform/user-proto v0.0.11/go.mod h1:+W3ciXEQrPUZ3+KOiEyXV7OZCxcfoyVV2WUkR25NfHM=
 github.com/samber/lo v1.47.0 h1:z7RynLwP5nbyRscyvcD043DWYoOcYRv3mV8lBeqOCLc=
