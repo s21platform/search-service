@@ -81,21 +81,21 @@ func (h *Handler) GetSociety(ctx context.Context, in *search.GetSocietyIn) (*sea
 }
 
 func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLimitIn) (*search.GetUserWithLimitOut, error) {
-	fmt.Println("start offset")
-	//fmt.Println(ctx)
-	//fmt.Println(ctx.Value(config.KeyUUID).([]string))
-	//ctx = metadata.NewOutgoingContext(ctx, metadata.Pairs("uuid", ctx.Value(config.KeyUUID).(string)))
-
 	userOffsetOut, err := h.userS.GetUserWithOffset(ctx, in.Limit, in.Offset, in.Nickname)
-
-	fmt.Println("End GET USER LIMIT before err")
 
 	if err != nil {
 		return nil, fmt.Errorf("error in GetUserWithOffset: %w", err)
 	}
 
-	fmt.Println("I TUT")
-	fmt.Println("userOffset:", userOffsetOut)
-
-	return nil, nil
+	var userOut []*search.UserSr
+	for _, user := range userOffsetOut.User {
+		userOut = append(userOut, &search.UserSr{
+			Nickname:   user.Nickname,
+			Uuid:       user.Uuid,
+			AvatarLink: user.AvatarLink,
+			Name:       user.Name,
+			Surname:    user.Surname,
+		})
+	}
+	return &search.GetUserWithLimitOut{Users: userOut, Total: userOffsetOut.Total}, nil
 }

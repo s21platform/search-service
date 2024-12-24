@@ -21,6 +21,6 @@ func Verification(
 	if !ok {
 		return nil, status.Errorf(codes.Unauthenticated, "no uuid found in metadata")
 	}
-	ctx = context.WithValue(ctx, config.KeyUUID, userIDs)
+	ctx = context.WithValue(ctx, config.KeyUUID, userIDs[0])
 	return handler(ctx, req)
 }

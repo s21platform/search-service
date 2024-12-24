@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 
+	"google.golang.org/grpc/metadata"
+
 	"github.com/s21platform/search-service/internal/config"
 	user_proto "github.com/s21platform/user-proto/user-proto"
 	"google.golang.org/grpc"
@@ -16,6 +18,7 @@ type Handle struct {
 }
 
 func (h *Handle) GetUserWithOffset(ctx context.Context, limit, offset int64, nickName string) (*user_proto.GetUserWithOffsetOut, error) {
+	ctx = metadata.NewOutgoingContext(ctx, metadata.Pairs("uuid", ctx.Value(config.KeyUUID).(string)))
 	users, err := h.client.GetUserWithOffset(ctx, &user_proto.GetUserWithOffsetIn{Limit: limit, Offset: offset, Nickname: nickName})
 	if err != nil {
 		return nil, fmt.Errorf("get user: %w", err)
