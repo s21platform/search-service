@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/s21platform/search-proto/search"
@@ -10,10 +11,11 @@ import (
 
 type Handler struct {
 	search.UnimplementedSearchServiceServer
+	uS userService
 }
 
-func New() *Handler {
-	return &Handler{}
+func New(uS userService) *Handler {
+	return &Handler{uS: uS}
 }
 
 func (h *Handler) GetSociety(ctx context.Context, in *search.GetSocietyIn) (*search.GetSocietyOut, error) {
@@ -76,4 +78,24 @@ func (h *Handler) GetSociety(ctx context.Context, in *search.GetSocietyIn) (*sea
 		Societies: societies[start:end],
 		Total:     total,
 	}, nil
+}
+
+func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLimitIn) (*search.GetUserWithLimitOut, error) {
+	userOffsetOut, err := h.uS.GetUserWithOffset(ctx, in.Limit, in.Offset, in.Nickname)
+
+	if err != nil {
+		return nil, fmt.Errorf("error in GetUserWithOffset: %w", err)
+	}
+
+	var usersOut []*search.UserSr
+	for _, user := range userOffsetOut.User {
+		usersOut = append(usersOut, &search.UserSr{
+			Nickname:   user.Nickname,
+			Uuid:       user.Uuid,
+			AvatarLink: user.AvatarLink,
+			Name:       user.Name,
+			Surname:    user.Surname,
+		})
+	}
+	return &search.GetUserWithLimitOut{Users: usersOut, Total: userOffsetOut.Total}, nil
 }

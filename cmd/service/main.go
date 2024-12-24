@@ -5,6 +5,8 @@ import (
 	"log"
 	"net"
 
+	"github.com/s21platform/search-service/internal/clients/user"
+
 	"github.com/s21platform/search-service/internal/infra"
 
 	"github.com/s21platform/search-proto/search"
@@ -16,7 +18,8 @@ import (
 func main() {
 	cfg := config.MustLoad()
 
-	service := rpc.New()
+	userClient := user.MustConnect(cfg)
+	service := rpc.New(userClient)
 	server := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
 			infra.Verification))

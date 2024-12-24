@@ -15,6 +15,7 @@ type Config struct {
 	Service  Service
 	Metrics  Metrics
 	Platform Platform
+	User     User
 }
 
 type Service struct {
@@ -29,6 +30,11 @@ type Metrics struct {
 
 type Platform struct {
 	Env string `env:"ENV"`
+}
+
+type User struct {
+	Host string `env:"USER_SERVICE_HOST"`
+	Port string `env:"USER_SERVICE_PORT"`
 }
 
 func MustLoad() *Config {
