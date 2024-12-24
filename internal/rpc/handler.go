@@ -6,17 +6,16 @@ import (
 	"strings"
 
 	"github.com/s21platform/search-proto/search"
-	users "github.com/s21platform/user-proto/user-proto"
 	"github.com/samber/lo"
 )
 
 type Handler struct {
 	search.UnimplementedSearchServiceServer
-	users users.UserServiceClient
+	userS userS
 }
 
-func New() *Handler {
-	return &Handler{}
+func New(users userS) *Handler {
+	return &Handler{userS: users}
 }
 
 func (h *Handler) GetSociety(ctx context.Context, in *search.GetSocietyIn) (*search.GetSocietyOut, error) {
@@ -83,23 +82,16 @@ func (h *Handler) GetSociety(ctx context.Context, in *search.GetSocietyIn) (*sea
 
 func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLimitIn) (*search.GetUserWithLimitOut, error) {
 	fmt.Println("start offset")
+	//fmt.Println(ctx)
+	//fmt.Println(ctx.Value(config.KeyUUID).([]string))
+	//ctx = metadata.NewOutgoingContext(ctx, metadata.Pairs("uuid", ctx.Value(config.KeyUUID).(string)))
 
-	us := &users.GetUserWithOffsetIn{
-		Limit:    in.Limit,
-		Offset:   in.Offset,
-		Nickname: in.Nickname,
-	}
-
-	userOffsetOut, err := h.users.GetUserWithOffset(ctx, us)
+	userOffsetOut, err := h.userS.GetUserWithOffset(ctx, in.Limit, in.Offset, in.Nickname)
 
 	fmt.Println("End GET USER LIMIT before err")
 
 	if err != nil {
 		return nil, fmt.Errorf("error in GetUserWithOffset: %w", err)
-	}
-
-	if userOffsetOut == nil {
-		return nil, fmt.Errorf("userOffset is nil")
 	}
 
 	fmt.Println("I TUT")
