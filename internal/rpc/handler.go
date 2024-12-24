@@ -5,8 +5,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/s21platform/search-proto/search"
 	"github.com/samber/lo"
+
+	logger_lib "github.com/s21platform/logger-lib"
+	"github.com/s21platform/search-proto/search"
+
+	"github.com/s21platform/search-service/internal/config"
 )
 
 type Handler struct {
@@ -81,9 +85,12 @@ func (h *Handler) GetSociety(ctx context.Context, in *search.GetSocietyIn) (*sea
 }
 
 func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLimitIn) (*search.GetUserWithLimitOut, error) {
+	logger := logger_lib.FromContext(ctx, config.KeyLogger)
+	logger.AddFuncName("GetUserWithLimit")
 	userOffsetOut, err := h.uS.GetUserWithOffset(ctx, in.Limit, in.Offset, in.Nickname)
 
 	if err != nil {
+		logger.Error(fmt.Sprintf("failed to get user wiht offset: %v", err))
 		return nil, fmt.Errorf("error in GetUserWithOffset: %w", err)
 	}
 

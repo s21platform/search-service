@@ -17,8 +17,11 @@ func Verification(
 	handler grpc.UnaryHandler,
 ) (interface{}, error) {
 	md, ok := metadata.FromIncomingContext(ctx)
-	userIDs := md["uuid"]
 	if !ok {
+		return nil, status.Errorf(codes.Unauthenticated, "no info in metadata")
+	}
+	userIDs, ok := md["uuid"]
+	if !ok || len(userIDs) != 1 {
 		return nil, status.Errorf(codes.Unauthenticated, "no uuid found in metadata")
 	}
 	ctx = context.WithValue(ctx, config.KeyUUID, userIDs[0])
