@@ -5,6 +5,8 @@ import (
 	"log"
 	"net"
 
+	logger_lib "github.com/s21platform/logger-lib"
+
 	"github.com/s21platform/search-service/internal/clients/user"
 
 	"github.com/s21platform/search-service/internal/infra"
@@ -17,12 +19,14 @@ import (
 
 func main() {
 	cfg := config.MustLoad()
+	logger := logger_lib.New(cfg.Logger.Host, cfg.Logger.Port, cfg.Service.Name, cfg.Platform.Env)
 
 	userClient := user.MustConnect(cfg)
 	service := rpc.New(userClient)
 	server := grpc.NewServer(
-		grpc.ChainUnaryInterceptor(
-			infra.Verification))
+		grpc.ChainUnaryInterceptor(infra.Verification),
+		grpc.ChainUnaryInterceptor(infra.Logger(logger)),
+	)
 	search.RegisterSearchServiceServer(server, service)
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.Service.Port))
