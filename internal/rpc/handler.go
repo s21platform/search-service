@@ -97,8 +97,10 @@ func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLi
 
 	var usersOut []*search.UserSr
 	for _, user := range userOffsetOut.User {
-		isFriend, _ := h.fS.IsFriendsExist(ctx, user.Uuid)
-		fmt.Println(user.Uuid, isFriend)
+		isFriend, err := h.fS.IsFriendsExist(ctx, user.Uuid)
+		if err != nil {
+			logger.Error(fmt.Sprintf("failed to get user friend: %v", err))
+		}
 		usersOut = append(usersOut, &search.UserSr{
 			Nickname:   user.Nickname,
 			Uuid:       user.Uuid,
