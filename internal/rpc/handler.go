@@ -16,10 +16,11 @@ import (
 type Handler struct {
 	search.UnimplementedSearchServiceServer
 	uS userService
+	fS friendsService
 }
 
-func New(uS userService) *Handler {
-	return &Handler{uS: uS}
+func New(uS userService, fS friendsService) *Handler {
+	return &Handler{uS: uS, fS: fS}
 }
 
 func (h *Handler) GetSociety(ctx context.Context, in *search.GetSocietyIn) (*search.GetSocietyOut, error) {
@@ -96,12 +97,17 @@ func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLi
 
 	var usersOut []*search.UserSr
 	for _, user := range userOffsetOut.User {
+		isFriend, err := h.fS.IsFriendsExist(ctx, user.Uuid)
+		if err != nil {
+			logger.Error(fmt.Sprintf("failed to get user friend: %v", err))
+		}
 		usersOut = append(usersOut, &search.UserSr{
 			Nickname:   user.Nickname,
 			Uuid:       user.Uuid,
 			AvatarLink: user.AvatarLink,
 			Name:       user.Name,
 			Surname:    user.Surname,
+			IsFriend:   isFriend,
 		})
 	}
 	return &search.GetUserWithLimitOut{Users: usersOut, Total: userOffsetOut.Total}, nil

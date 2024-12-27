@@ -11,6 +11,7 @@ require (
 require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
+	github.com/s21platform/friends-proto v0.0.12 // indirect
 	github.com/s21platform/logger-lib v0.0.3 // indirect
 	github.com/s21platform/user-proto v0.0.11 // indirect
 	github.com/samber/lo v1.47.0 // indirect
