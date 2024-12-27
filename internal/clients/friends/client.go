@@ -30,5 +30,8 @@ func (c *Client) IsFriendsExist(ctx context.Context, uuid string) (bool, error) 
 	isFriend, err := c.client.IsFriendExist(ctx, &friends_proto.IsFriendExistIn{
 		Peer: uuid,
 	})
-	return isFriend.Success, err
+	if err != nil {
+		return false, err
+	}
+	return isFriend.Success, nil
 }
