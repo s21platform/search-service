@@ -5,6 +5,8 @@ import (
 	"log"
 	"net"
 
+	"github.com/s21platform/search-service/internal/clients/society"
+
 	"github.com/s21platform/search-service/internal/clients/friends"
 
 	logger_lib "github.com/s21platform/logger-lib"
@@ -25,7 +27,8 @@ func main() {
 
 	userClient := user.MustConnect(cfg)
 	friendsClient := friends.MustConnect(cfg)
-	service := rpc.New(userClient, friendsClient)
+	societyClient := society.MustConnect(cfg)
+	service := rpc.New(userClient, friendsClient, societyClient)
 	server := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(infra.Verification),
 		grpc.ChainUnaryInterceptor(infra.Logger(logger)),

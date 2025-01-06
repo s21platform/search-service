@@ -4,7 +4,7 @@ go 1.22.8
 
 require (
 	github.com/ilyakaznacheev/cleanenv v1.5.0
-	github.com/s21platform/search-proto v0.0.8
+	github.com/s21platform/search-proto v0.0.10
 	google.golang.org/grpc v1.68.0
 )
 
@@ -13,6 +13,7 @@ require (
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/s21platform/friends-proto v0.0.12 // indirect
 	github.com/s21platform/logger-lib v0.0.3 // indirect
+	github.com/s21platform/society-proto v0.0.15 // indirect
 	github.com/s21platform/user-proto v0.0.11 // indirect
 	github.com/samber/lo v1.47.0 // indirect
 	golang.org/x/net v0.29.0 // indirect
