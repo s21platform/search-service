@@ -19,6 +19,7 @@ type Config struct {
 	User     User
 	Logger   Logger
 	Friends  Friends
+	Society  Society
 }
 
 type Service struct {
@@ -48,6 +49,11 @@ type Logger struct {
 type Friends struct {
 	Host string `env:"FRIENDS_SERVICE_HOST"`
 	Port string `env:"FRIENDS_SERVICE_PORT"`
+}
+
+type Society struct {
+	Host string `env:"SOCIETY_SERVICE_HOST"`
+	Port string `env:"SOCIETY_SERVICE_PORT"`
 }
 
 func MustLoad() *Config {
