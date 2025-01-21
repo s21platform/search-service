@@ -25,10 +25,7 @@ func main() {
 	cfg := config.MustLoad()
 	logger := logger_lib.New(cfg.Logger.Host, cfg.Logger.Port, cfg.Service.Name, cfg.Platform.Env)
 
-	logger.AddFuncName("addFunc")
 	logger.Info("Start_SearchService")
-	logger.Error("Error logger")
-	logger.Warn("Warn_logger")
 
 	userClient := user.MustConnect(cfg)
 	friendsClient := friends.MustConnect(cfg)
