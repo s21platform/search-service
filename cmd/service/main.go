@@ -25,6 +25,8 @@ func main() {
 	cfg := config.MustLoad()
 	logger := logger_lib.New(cfg.Logger.Host, cfg.Logger.Port, cfg.Service.Name, cfg.Platform.Env)
 
+	logger.Info("Start_SearchService")
+
 	userClient := user.MustConnect(cfg)
 	friendsClient := friends.MustConnect(cfg)
 	societyClient := society.MustConnect(cfg)
