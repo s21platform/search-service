@@ -6,12 +6,6 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
-type key string
-
-const KeyUUID key = key("uuid")
-const KeyMetrics = key("metrics")
-const KeyLogger = key("logger")
-
 type Config struct {
 	Service  Service
 	Metrics  Metrics
