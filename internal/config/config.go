@@ -14,6 +14,8 @@ type Config struct {
 	Logger   Logger
 	Friends  Friends
 	Society  Society
+	Kafka    Kafka
+	Elastic  Elastic
 }
 
 type Service struct {
@@ -49,6 +51,13 @@ type Society struct {
 	Host string `env:"SOCIETY_SERVICE_HOST"`
 	Port string `env:"SOCIETY_SERVICE_PORT"`
 }
+
+type Kafka struct {
+	Server     string `env:"KAFKA_SERVER"`
+	UserUpdate string `env:"USER_UPDATE"` // ?????
+}
+
+type Elastic struct{}
 
 func MustLoad() *Config {
 	cfg := &Config{}
