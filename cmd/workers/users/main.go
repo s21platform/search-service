@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/s21platform/search-service/internal/repository/elsearch"
+
 	"github.com/s21platform/search-service/internal/clients/user"
 
 	kafka_lib "github.com/s21platform/kafka-lib"
@@ -25,7 +27,11 @@ func main() {
 	userClient := user.MustConnect(cfg)
 
 	// worker elastic
-	var elastic config.Elastic
+	elastic, err := elsearch.New(cfg.Elastic)
+	if err != nil {
+		logger.Error(fmt.Sprintf("failed to create elastic client: %v", err))
+		return
+	}
 	// end init elastic
 
 	ctx := context.WithValue(context.Background(), config.KeyMetrics, metrics)

@@ -57,7 +57,9 @@ type Kafka struct {
 	UserUpdate string `env:"USER_UPDATE"` // ?????
 }
 
-type Elastic struct{}
+type Elastic struct {
+	Server string `env:"ELASTIC_SERVICE"`
+}
 
 func MustLoad() *Config {
 	cfg := &Config{}
