@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/s21platform/search-service/internal/clients/user"
+
 	kafka_lib "github.com/s21platform/kafka-lib"
 	logger_lib "github.com/s21platform/logger-lib"
 	"github.com/s21platform/metrics-lib/pkg"
@@ -20,6 +22,8 @@ func main() {
 		logger.Error(fmt.Sprintf("failed to error initializing metrics: %v", err))
 	}
 
+	userClient := user.MustConnect(cfg)
+
 	// worker elastic
 	var elastic config.Elastic
 	// end init elastic
@@ -33,7 +37,7 @@ func main() {
 		return
 	}
 
-	newUserHandler := users.New(elastic)
+	newUserHandler := users.New(elastic, userClient)
 
 	NewUsersConsumer.RegisterHandler(ctx, newUserHandler.Handler)
 

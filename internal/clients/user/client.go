@@ -35,3 +35,12 @@ func MustConnect(cfg *config.Config) *Client {
 	client := user_proto.NewUserServiceClient(conn)
 	return &Client{client: client}
 }
+
+func (c *Client) GetUserInfoByUUID(ctx context.Context, uuid string) (*user_proto.GetUserInfoByUUIDOut, error) {
+	ctx = metadata.NewOutgoingContext(ctx, metadata.Pairs("uuid", ctx.Value(config.KeyUUID).(string)))
+	userInfo, err := c.client.GetUserInfoByUUID(ctx, &user_proto.GetUserInfoByUUIDIn{Uuid: uuid})
+	if err != nil {
+		return nil, fmt.Errorf("get user: %w", err)
+	}
+	return userInfo, nil
+}

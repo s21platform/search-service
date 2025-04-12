@@ -4,7 +4,7 @@ go 1.22.8
 
 require (
 	github.com/ilyakaznacheev/cleanenv v1.5.0
-	github.com/s21platform/search-proto v0.0.10
+	github.com/s21platform/search-proto v0.0.11
 	google.golang.org/grpc v1.68.0
 )
 

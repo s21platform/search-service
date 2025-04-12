@@ -4,16 +4,19 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 
+	search "github.com/s21platform/search-proto/search/new_uuid"
 	"github.com/s21platform/search-service/internal/config"
 )
 
 type Handler struct {
 	els config.Elastic
+	uC  UserClient
 }
 
-func New(els config.Elastic) *Handler {
-	return &Handler{els: els}
+func New(els config.Elastic, uC UserClient) *Handler {
+	return &Handler{els: els, uC: uC}
 }
 
 func convertMessage(bMessage []byte, target interface{}) error {
@@ -25,12 +28,18 @@ func convertMessage(bMessage []byte, target interface{}) error {
 }
 
 func (h *Handler) Handler(ctx context.Context, in []byte) {
-	_ = ctx
-	var str string
-	err := convertMessage(in, &str)
+	fmt.Println("Message:", string(in), ctx)
+	var msg search.UpdateUser
+	err := convertMessage(in, &msg)
 	if err != nil {
-		fmt.Println(err)
+		log.Println("convert err:", err)
+		return
 	}
-	fmt.Println("work") ///////////////////////////////////////////////////////del, but not now
-	fmt.Println("Message:", str)
+	ctx = context.WithValue(ctx, config.KeyUUID, msg.Uuid)
+	res, err := h.uC.GetUserInfoByUUID(ctx, msg.Uuid)
+	if err != nil {
+		log.Println("failed to GetInfo from user-service:", err)
+		return
+	}
+	fmt.Println(res)
 }
