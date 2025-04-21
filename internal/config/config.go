@@ -6,12 +6,6 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
-type key string
-
-const KeyUUID key = key("uuid")
-const KeyMetrics = key("metrics")
-const KeyLogger = key("logger")
-
 type Config struct {
 	Service  Service
 	Metrics  Metrics
@@ -20,6 +14,8 @@ type Config struct {
 	Logger   Logger
 	Friends  Friends
 	Society  Society
+	Kafka    Kafka
+	Elastic  Elastic
 }
 
 type Service struct {
@@ -54,6 +50,15 @@ type Friends struct {
 type Society struct {
 	Host string `env:"SOCIETY_SERVICE_HOST"`
 	Port string `env:"SOCIETY_SERVICE_PORT"`
+}
+
+type Kafka struct {
+	Server     string `env:"KAFKA_SERVER"`
+	UserUpdate string `env:"USER_UPDATE"` // ?????
+}
+
+type Elastic struct {
+	Server string `env:"ELASTIC_SERVICE"`
 }
 
 func MustLoad() *Config {

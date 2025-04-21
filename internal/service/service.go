@@ -1,4 +1,4 @@
-package rpc
+package service
 
 import (
 	"context"
@@ -6,19 +6,22 @@ import (
 
 	logger_lib "github.com/s21platform/logger-lib"
 	"github.com/s21platform/search-proto/search"
+	"github.com/s21platform/search-service/internal/model"
+	"google.golang.org/grpc/metadata"
 
 	"github.com/s21platform/search-service/internal/config"
 )
 
 type Handler struct {
 	search.UnimplementedSearchServiceServer
-	uS userService
-	fS friendsService
-	sS societyService
+	uS  userService
+	elS Elastic
+	fS  friendsService
+	sS  societyService
 }
 
-func New(uS userService, fS friendsService, sS societyService) *Handler {
-	return &Handler{uS: uS, fS: fS, sS: sS}
+func New(uS userService, els Elastic, fS friendsService, sS societyService) *Handler {
+	return &Handler{uS: uS, elS: els, fS: fS, sS: sS}
 }
 
 func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLimitIn) (*search.GetUserWithLimitOut, error) {
@@ -68,4 +71,35 @@ func (h *Handler) GetSocietyWithLimit(ctx context.Context, in *search.GetSociety
 		})
 	}
 	return &search.GetSocietyWithLimitOut{Societies: societiesOut, Total: societyOffsetOut.Total}, nil
+}
+
+func (h *Handler) LoadAllUsers() error {
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, config.KeyUUID, "search")
+	ctx = metadata.NewOutgoingContext(ctx, metadata.Pairs("uuid", ctx.Value(config.KeyUUID).(string)))
+
+	err := h.elS.ExistOrCreateIndex(ctx, []string{"users"})
+	if err != nil {
+		fmt.Printf("failed to check existence of users: %v\n", err)
+		return err
+	}
+
+	total := int64(1)
+	limit := config.TotalReadUser
+	offset := int64(0)
+	for total > offset {
+		res, err := h.uS.GetUsersInfoWithOffset(ctx, "", limit, offset)
+		if err != nil {
+			fmt.Printf("failed to load users: %v\n", err)
+			return err
+		}
+		total = res.Total
+		offset += limit
+		users := model.ToUserInfoList(res)
+		err = h.elS.BulkIndexUsers(ctx, users)
+		if err != nil {
+			fmt.Printf("failed to index users: %v\n", err)
+		}
+	}
+	return nil
 }
