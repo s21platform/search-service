@@ -5,6 +5,8 @@ import (
 	"log"
 	"net"
 
+	"github.com/s21platform/search-service/internal/repository/elsearch"
+
 	"github.com/s21platform/search-service/internal/clients/society"
 
 	"github.com/s21platform/search-service/internal/clients/friends"
@@ -25,10 +27,24 @@ func main() {
 	cfg := config.MustLoad()
 	logger := logger_lib.New(cfg.Logger.Host, cfg.Logger.Port, cfg.Service.Name, cfg.Platform.Env)
 
+	fmt.Println("start \n\n cfg user:", cfg.User.Host, cfg.User.Port)
 	userClient := user.MustConnect(cfg)
 	friendsClient := friends.MustConnect(cfg)
 	societyClient := society.MustConnect(cfg)
-	service := service.New(userClient, friendsClient, societyClient)
+	elastic, err := elsearch.New(cfg.Elastic)
+	if err != nil {
+		logger.Error(fmt.Sprintf("failed to create elastic client: %v", err))
+		return
+	}
+	service := service.New(userClient, elastic, friendsClient, societyClient)
+
+	//load all users
+	if err := service.LoadAllUsers(); err != nil {
+		fmt.Println("error load", err)
+	} else {
+		fmt.Println("loaded all users")
+	}
+
 	server := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(infra.Verification),
 		grpc.ChainUnaryInterceptor(infra.Logger(logger)),

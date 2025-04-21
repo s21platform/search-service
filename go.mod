@@ -24,7 +24,7 @@ require (
 	github.com/s21platform/logger-lib v0.0.6 // indirect
 	github.com/s21platform/metrics-lib v0.0.9 // indirect
 	github.com/s21platform/society-proto v0.0.15 // indirect
-	github.com/s21platform/user-proto v0.0.11 // indirect
+	github.com/s21platform/user-proto v0.0.16 // indirect
 	github.com/samber/lo v1.47.0 // indirect
 	github.com/segmentio/kafka-go v0.4.47 // indirect
 	go.opentelemetry.io/otel v1.28.0 // indirect

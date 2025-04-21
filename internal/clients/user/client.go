@@ -44,3 +44,12 @@ func (c *Client) GetUserInfoByUUID(ctx context.Context, uuid string) (*user_prot
 	}
 	return userInfo, nil
 }
+
+func (c *Client) GetUsersInfoWithOffset(ctx context.Context, nickname string, limit, total int64) (*user_proto.GetUserWithOffsetOutAll, error) {
+	ctx = metadata.NewOutgoingContext(ctx, metadata.Pairs("uuid", ctx.Value(config.KeyUUID).(string)))
+	usersInfo, err := c.client.GetUsersInfoWithOffset(ctx, &user_proto.GetUserWithOffsetIn{Limit: limit, Offset: total, Nickname: nickname})
+	if err != nil {
+		return nil, fmt.Errorf("failet to get all users: %w", err)
+	}
+	return usersInfo, nil
+}

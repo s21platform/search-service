@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
+	"time"
 
 	"github.com/s21platform/search-service/internal/model"
 	user_proto "github.com/s21platform/user-proto/user-proto"
@@ -31,33 +33,43 @@ func convertMessage(bMessage []byte, target interface{}) error {
 }
 
 func toUserDoc(user *user_proto.GetUserInfoByUUIDOut) model.UserInfo {
-	os := model.GetOs{
-		Id:    user.Os.Id,
-		Label: user.Os.Label,
-	}
 	return model.UserInfo{
-		Nickname:   user.Nickname,
-		Avatar:     user.Avatar,
-		Name:       safeString(user.Name),
-		Surname:    safeString(user.Surname),
-		Birthdate:  safeString(user.Birthdate),
-		Phone:      safeString(user.Phone),
-		City:       safeString(user.City),
-		Telegram:   safeString(user.Telegram),
-		Git:        safeString(user.Git),
-		Os:         os,
-		Work:       safeString(user.Work),
-		University: safeString(user.University),
-		Skills:     user.Skills,
-		Hobbies:    user.Hobbies,
+		Nickname:       user.Nickname,
+		LastAvatarLink: user.Avatar,
+		Name:           user.Name,
+		Surname:        user.Surname,
+		Birthdate:      parseDate(user.Birthdate),
+		Phone:          user.Phone,
+		Telegram:       user.Telegram,
+		Git:            user.Git,
+		CityId:         parseInt64FromString(user.City),
+		OSId:           &user.Os.Id,
+		WorkId:         parseInt64FromString(user.Work),
+		UniversityId:   parseInt64FromString(user.University),
+		UUID:           user.Uuid,
 	}
 }
 
-func safeString(s *string) string {
-	if s == nil {
-		return ""
+func parseDate(dateStr *string) *time.Time {
+	if dateStr == nil || *dateStr == "" {
+		return nil
 	}
-	return *s
+	t, err := time.Parse(time.RFC3339, *dateStr)
+	if err != nil {
+		return nil
+	}
+	return &t
+}
+
+func parseInt64FromString(s *string) *int64 {
+	if s == nil {
+		return nil
+	}
+	val, err := strconv.ParseInt(*s, 10, 64)
+	if err != nil {
+		return nil
+	}
+	return &val
 }
 
 func (h *Handler) Handler(ctx context.Context, in []byte) {
