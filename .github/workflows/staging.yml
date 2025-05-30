@@ -4,7 +4,6 @@ on:
     branches:
       - main
 
-
 jobs:
   linters:
     name: Run linters
@@ -20,20 +19,17 @@ jobs:
 
       - name: Install golangci-lint
         run: |
-          go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.55.2
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.57.2
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
       - name: Run golangci-lint
         run: |
-          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.57.2
-          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-
+          golangci-lint run --timeout 5m
 
   test:
     name: Run tests
     runs-on: ubuntu-latest
     needs: linters
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -46,21 +42,12 @@ jobs:
       - name: Run tests
         run: go test -coverprofile=coverage.out -tags=test -v ./...
 
-      #      - name: Check coverage
-      #        run: |
-      #          go tool cover -func=coverage.out -o=coverage.txt
-      #          coverage=$(go tool cover -func=coverage.out | grep total | awk '{print substr($3, 1, length($3)-1)}')
-      #          echo "Coverage is $coverage%"
-      #          if (( $(echo "$coverage < 80.0" | bc -l) )); then
-      #          echo "Coverage is below 80%"
-      #          exit 1
-      #          fi
-
       - name: Upload coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: coverage.txt
+          path: coverage.out
+
   build_and_push:
     name: Build and Push Image to YC
     runs-on: ubuntu-latest
