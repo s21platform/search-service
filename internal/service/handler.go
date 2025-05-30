@@ -1,4 +1,4 @@
-package rpc
+package service
 
 import (
 	"context"
@@ -33,7 +33,7 @@ func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLi
 
 	var usersOut []*search.UserSr
 	for _, user := range userOffsetOut.User {
-		isFriend, err := h.fS.IsFriendsExist(ctx, user.Uuid)
+		isFriend, err := h.uS.CheckFriendship(ctx, user.Uuid)
 		if err != nil {
 			logger.Error(fmt.Sprintf("failed to get user friend: %v", err))
 		}

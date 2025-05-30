@@ -3,28 +3,41 @@ package user
 import (
 	"context"
 	"fmt"
+
+	//user_proto "github.com/s21platform/user-proto/user-proto"
 	"log"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 
-	user_proto "github.com/s21platform/user-proto/user-proto"
-
 	"github.com/s21platform/search-service/internal/config"
+	//user_proto "github.com/s21platform/user-proto/user-proto"
+	user "github.com/s21platform/user-service/pkg/user"
 )
 
 type Client struct {
-	client user_proto.UserServiceClient
+	client user.UserServiceClient
 }
 
-func (c *Client) GetUserWithOffset(ctx context.Context, limit, offset int64, nickName string) (*user_proto.GetUserWithOffsetOut, error) {
+func (c *Client) GetUserWithOffset(ctx context.Context, limit, offset int64, nickName string) (*user.GetUserWithOffsetOut, error) {
 	ctx = metadata.NewOutgoingContext(ctx, metadata.Pairs("uuid", ctx.Value(config.KeyUUID).(string)))
-	users, err := c.client.GetUserWithOffset(ctx, &user_proto.GetUserWithOffsetIn{Limit: limit, Offset: offset, Nickname: nickName})
+	users, err := c.client.GetUserWithOffset(ctx, &user.GetUserWithOffsetIn{Limit: limit, Offset: offset, Nickname: nickName})
 	if err != nil {
 		return nil, fmt.Errorf("get user: %w", err)
 	}
 	return users, nil
+}
+
+func (c *Client) CheckFriendship(ctx context.Context, peer string) (bool, error) {
+	ctx = metadata.NewOutgoingContext(ctx, metadata.Pairs("uuid", ctx.Value(config.KeyUUID).(string)))
+	isFriend, err := c.client.CheckFriendship(ctx, &user.CheckFriendshipIn{
+		Uuid: peer,
+	})
+	if err != nil {
+		return false, err
+	}
+	return isFriend.Succses, nil
 }
 
 func MustConnect(cfg *config.Config) *Client {
@@ -32,6 +45,6 @@ func MustConnect(cfg *config.Config) *Client {
 	if err != nil {
 		log.Fatalf("Could not connect to user service: %v", err)
 	}
-	client := user_proto.NewUserServiceClient(conn)
+	client := user.NewUserServiceClient(conn)
 	return &Client{client: client}
 }
