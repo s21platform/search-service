@@ -75,15 +75,25 @@ jobs:
 #          docker push ${{ secrets.CR_REGISTRY }}/${{ secrets.CR_NAME }}-migrate:develop
   deploy:
     runs-on: ubuntu-latest
-    needs: build_and_push
-    steps:
-      - name: executing remote ssh commands to deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST_DEVELOP }}
-          username: ${{ secrets.USER }}
-          key: ${{ secrets.PRIVATE_SSH_KEY_DEVELOP }}
-          passphrase: ${{ secrets.PASSPHRASE_DEVELOP }}
-          script: |
-            docker pull ${{ secrets.CR_REGISTRY }}/${{ secrets.CR_NAME }}:develop
-            docker-compose -f ~/space21/staging/staging-deployment/docker-compose.yml --env-file ~/space21/staging/.env up -d ${{ secrets.CR_NAME }}
+    build_and_push:
+      name: Build and Push Image to YC
+      runs-on: ubuntu-latest
+      needs: test
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v2
+
+        - name: Login to Yandex CR
+          uses: yc-actions/yc-cr-login@v0.1-alpha
+          with:
+            yc-sa-json-credentials: ${{ secrets.YC_KEY }}
+
+        - name: Build and Push
+          run: |
+            docker build \
+              --build-arg GO_VERSION=1.24.3 \
+              -t ${{ secrets.CR_REGISTRY }}/${{ secrets.CR_NAME }}:develop .
+            docker push ${{ secrets.CR_REGISTRY }}/${{ secrets.CR_NAME }}:develop
