@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	//user_proto "github.com/s21platform/user-proto/user-proto"
 	"log"
 
 	"google.golang.org/grpc"
@@ -12,7 +11,6 @@ import (
 	"google.golang.org/grpc/metadata"
 
 	"github.com/s21platform/search-service/internal/config"
-	//user_proto "github.com/s21platform/user-proto/user-proto"
 	user "github.com/s21platform/user-service/pkg/user"
 )
 

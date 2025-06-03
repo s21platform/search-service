@@ -12,7 +12,6 @@ type Config struct {
 	Platform Platform
 	User     User
 	Logger   Logger
-	Friends  Friends
 	Society  Society
 }
 
@@ -38,11 +37,6 @@ type User struct {
 type Logger struct {
 	Host string `env:"LOGGER_SERVICE_HOST"`
 	Port string `env:"LOGGER_SERVICE_PORT"`
-}
-
-type Friends struct {
-	Host string `env:"FRIENDS_SERVICE_HOST"`
-	Port string `env:"FRIENDS_SERVICE_PORT"`
 }
 
 type Society struct {

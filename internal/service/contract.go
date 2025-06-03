@@ -12,10 +12,6 @@ type userService interface {
 	CheckFriendship(ctx context.Context, peer string) (bool, error)
 }
 
-type friendsService interface {
-	IsFriendsExist(ctx context.Context, uuid string) (bool, error)
-}
-
 type societyService interface {
 	GetSocietyWithOffset(ctx context.Context, limit, offset int64, name string) (*society.GetSocietyWithOffsetOut, error)
 }

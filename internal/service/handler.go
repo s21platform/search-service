@@ -13,12 +13,11 @@ import (
 type Handler struct {
 	search.UnimplementedSearchServiceServer
 	uS userService
-	fS friendsService
 	sS societyService
 }
 
-func New(uS userService, fS friendsService, sS societyService) *Handler {
-	return &Handler{uS: uS, fS: fS, sS: sS}
+func New(uS userService, sS societyService) *Handler {
+	return &Handler{uS: uS, sS: sS}
 }
 
 func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLimitIn) (*search.GetUserWithLimitOut, error) {
