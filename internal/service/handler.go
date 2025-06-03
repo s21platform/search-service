@@ -1,4 +1,4 @@
-package rpc
+package service
 
 import (
 	"context"
@@ -13,12 +13,11 @@ import (
 type Handler struct {
 	search.UnimplementedSearchServiceServer
 	uS userService
-	fS friendsService
 	sS societyService
 }
 
-func New(uS userService, fS friendsService, sS societyService) *Handler {
-	return &Handler{uS: uS, fS: fS, sS: sS}
+func New(uS userService, sS societyService) *Handler {
+	return &Handler{uS: uS, sS: sS}
 }
 
 func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLimitIn) (*search.GetUserWithLimitOut, error) {
@@ -33,7 +32,7 @@ func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLi
 
 	var usersOut []*search.UserSr
 	for _, user := range userOffsetOut.User {
-		isFriend, err := h.fS.IsFriendsExist(ctx, user.Uuid)
+		isFriend, err := h.uS.CheckFriendship(ctx, user.Uuid)
 		if err != nil {
 			logger.Error(fmt.Sprintf("failed to get user friend: %v", err))
 		}

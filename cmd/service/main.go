@@ -7,8 +7,6 @@ import (
 
 	"github.com/s21platform/search-service/internal/clients/society"
 
-	"github.com/s21platform/search-service/internal/clients/friends"
-
 	logger_lib "github.com/s21platform/logger-lib"
 
 	"github.com/s21platform/search-service/internal/clients/user"
@@ -17,7 +15,7 @@ import (
 
 	"github.com/s21platform/search-proto/search"
 	"github.com/s21platform/search-service/internal/config"
-	"github.com/s21platform/search-service/internal/rpc"
+	"github.com/s21platform/search-service/internal/service"
 	"google.golang.org/grpc"
 )
 
@@ -26,9 +24,8 @@ func main() {
 	logger := logger_lib.New(cfg.Logger.Host, cfg.Logger.Port, cfg.Service.Name, cfg.Platform.Env)
 
 	userClient := user.MustConnect(cfg)
-	friendsClient := friends.MustConnect(cfg)
 	societyClient := society.MustConnect(cfg)
-	service := rpc.New(userClient, friendsClient, societyClient)
+	service := service.New(userClient, societyClient)
 	server := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(infra.Verification),
 		grpc.ChainUnaryInterceptor(infra.Logger(logger)),
