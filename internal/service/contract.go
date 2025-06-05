@@ -15,3 +15,6 @@ type userService interface {
 type societyService interface {
 	GetSocietyWithOffset(ctx context.Context, limit, offset int64, name string) (*society.GetSocietyWithOffsetOut, error)
 }
+
+type elasticService interface {
+}
