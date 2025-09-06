@@ -3,13 +3,13 @@ package society
 import (
 	"context"
 	"fmt"
+	"google.golang.org/grpc/metadata"
 	"log"
 
 	"github.com/s21platform/search-service/internal/config"
 	society "github.com/s21platform/society-proto/society-proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/metadata"
 )
 
 type Client struct {

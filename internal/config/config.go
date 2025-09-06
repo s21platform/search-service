@@ -50,6 +50,7 @@ type Kafka struct {
 	Host       string `env:"KAFKA_HOST"`
 	Port       string `env:"KAFKA_PORT"`
 	UserUpdate string `env:"USER_UPDATE"`
+	UserCreate string `env:"USER_CREATE"`
 }
 
 type Elastic struct {
