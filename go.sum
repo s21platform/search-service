@@ -39,6 +39,9 @@ github.com/s21platform/kafka-lib v1.0.2 h1:0g7kU82tKDALkm7ayjtGE1IhvwZwXl/u20YFX
 github.com/s21platform/kafka-lib v1.0.2/go.mod h1:tmLv0RuMll1rznHyvVU7fSKZCNcZuKdR28bq5mJfjB8=
 github.com/s21platform/logger-lib v0.0.6 h1:Aa3wV7zsaUSUkLa4P8stKNKxmKpZEn9dNBsk00I7Ncw=
 github.com/s21platform/logger-lib v0.0.6/go.mod h1:KjnZvBFSCUriTW9QCp9y1LAPU4gUo3m8PmWNR3Th7MI=
+github.com/s21platform/logger-lib v1.0.0/go.mod h1:GzLPrzQWhXxlLS7bE7/3AQP1q1u1ZmVb4GYoPaR15Pg=
+github.com/s21platform/logger-lib v1.0.1 h1:CNNUoRZMFeczCHMFd+mi2u6+pJicrAvvDm7AiIISrZU=
+github.com/s21platform/logger-lib v1.0.1/go.mod h1:GzLPrzQWhXxlLS7bE7/3AQP1q1u1ZmVb4GYoPaR15Pg=
 github.com/s21platform/metrics-lib v0.0.9 h1:nFz4W+xps2nlxpOyGW/JLjZf2sTN/YXomumuC9nXwQ0=
 github.com/s21platform/metrics-lib v0.0.9/go.mod h1:Z1Aiy5uuyEmM//rQmhqkVh0JR8l5sVwe83TQegdNFxQ=
 github.com/s21platform/search-proto v0.0.10 h1:BbYUDgVaGbWuvxdQefg9exiN06xdMhXROPBkdioKJ/Q=
@@ -47,6 +50,8 @@ github.com/s21platform/society-proto v0.0.15 h1:VdsRwhoAhqYpTNba/cis2WfVYMMk0LC8
 github.com/s21platform/society-proto v0.0.15/go.mod h1:wLBVqLkJplzBeE0T25OUJGR2uV4I1Ut97K2Ouhc3sTQ=
 github.com/s21platform/user-service v0.0.5 h1:D5krWAbnZo/IgHre9Lbqqo19LFc/ICmht/KZFRwxuCQ=
 github.com/s21platform/user-service v0.0.5/go.mod h1:1EnfkQ1lmgjmJKt8kgISDz10J4vR+4PRQIeUSvHgewg=
+github.com/s21platform/user-service v0.0.10 h1:ekHHgHI9JRcyBYdIsMj+kovMrEBzVnXrK5tFDDfcVx8=
+github.com/s21platform/user-service v0.0.10/go.mod h1:qF9Ap+TWVtsOHQKDww8dUg6FSRtVwVIr1XL94Hu1Knc=
 github.com/segmentio/kafka-go v0.4.48 h1:9jyu9CWK4W5W+SroCe8EffbrRZVqAOkuaLd/ApID4Vs=
 github.com/segmentio/kafka-go v0.4.48/go.mod h1:HjF6XbOKh0Pjlkr5GVZxt6CsjjwnmhVOfURM5KMd8qg=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=

@@ -18,3 +18,8 @@ type societyService interface {
 
 type elasticService interface {
 }
+
+type userCrete interface {
+}
+type userUpdate interface {
+}

@@ -17,8 +17,8 @@ type Handler struct {
 	eS elasticService
 }
 
-func New(uS userService, sS societyService, eS elasticService) *Handler {
-	return &Handler{uS: uS, sS: sS, eS: eS}
+func New(uS userService, eS elasticService) *Handler {
+	return &Handler{uS: uS, eS: eS}
 }
 
 func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLimitIn) (*search.GetUserWithLimitOut, error) {

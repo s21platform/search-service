@@ -13,8 +13,6 @@ import (
 
 	"github.com/s21platform/search-service/internal/infra"
 
-	"github.com/s21platform/search-service/internal/repository/elastic"
-
 	"github.com/s21platform/search-proto/search"
 	"github.com/s21platform/search-service/internal/config"
 	"github.com/s21platform/search-service/internal/service"
@@ -27,12 +25,7 @@ func main() {
 
 	userClient := user.MustConnect(cfg)
 	societyClient := society.MustConnect(cfg)
-	elasticClient, err := elastic.MustConnect(cfg)
-	if err != nil {
-		logger.Error(fmt.Sprintf("failed to create elastic client: %v", err))
-		return
-	}
-	service := service.New(userClient, societyClient, elasticClient)
+	service := service.New(userClient, societyClient)
 	server := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(infra.Verification),
 		grpc.ChainUnaryInterceptor(infra.Logger(logger)),

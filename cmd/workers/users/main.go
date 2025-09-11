@@ -18,6 +18,7 @@ func main() {
 	logger := logger_lib.New(cfg.Logger.Host, cfg.Logger.Port, "search_kafka", cfg.Platform.Env)
 	metrics, err := pkg.NewMetrics(cfg.Metrics.Host, cfg.Metrics.Port, "search_kafka", cfg.Platform.Env)
 	if err != nil {
+		logger_lib.Error(context.Context(context.Background()), fmt.Sprintf("failed to error initializing metrics: %v", err))
 		logger.Error(fmt.Sprintf("failed to error initializing metrics: %v", err))
 	}
 
