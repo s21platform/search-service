@@ -4,10 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	logger_lib "github.com/s21platform/logger-lib"
 	"github.com/s21platform/search-proto/search"
-
-	"github.com/s21platform/search-service/internal/config"
 )
 
 type Handler struct {
@@ -22,12 +19,12 @@ func New(uS userService, eS elasticService) *Handler {
 }
 
 func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLimitIn) (*search.GetUserWithLimitOut, error) {
-	logger := logger_lib.FromContext(ctx, config.KeyLogger)
-	logger.AddFuncName("GetUserWithLimit")
+	//logger := logger_lib.FromContext(ctx, config.KeyLogger)
+	//logger.AddFuncName("GetUserWithLimit")
 	userOffsetOut, err := h.uS.GetUserWithOffset(ctx, in.Limit, in.Offset, in.Nickname)
 
 	if err != nil {
-		logger.Error(fmt.Sprintf("failed to get user wiht offset: %v", err))
+		//logger.Error(fmt.Sprintf("failed to get user wiht offset: %v", err))
 		return nil, fmt.Errorf("error in GetUserWithOffset: %w", err)
 	}
 
@@ -35,7 +32,8 @@ func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLi
 	for _, user := range userOffsetOut.User {
 		isFriend, err := h.uS.CheckFriendship(ctx, user.Uuid)
 		if err != nil {
-			logger.Error(fmt.Sprintf("failed to get user friend: %v", err))
+			//logger.Error(fmt.Sprintf("failed to get user friend: %v", err))
+			return nil, fmt.Errorf("error in CheckFriendship: %w", err)
 		}
 		usersOut = append(usersOut, &search.UserSr{
 			Nickname:   user.Nickname,
@@ -50,11 +48,11 @@ func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLi
 }
 
 func (h *Handler) GetSocietyWithLimit(ctx context.Context, in *search.GetSocietyWithLimitIn) (*search.GetSocietyWithLimitOut, error) {
-	logger := logger_lib.FromContext(ctx, config.KeyLogger)
-	logger.AddFuncName("GetSocietyWithLimit")
+	//logger := logger_lib.FromContext(ctx, config.KeyLogger)
+	//logger.AddFuncName("GetSocietyWithLimit")
 	societyOffsetOut, err := h.sS.GetSocietyWithOffset(ctx, in.Limit, in.Offset, in.Name)
 	if err != nil {
-		logger.Error(fmt.Sprintf("failed to get society wiht offset: %v", err))
+		//logger.Error(fmt.Sprintf("failed to get society wiht offset: %v", err))
 		return nil, fmt.Errorf("error in GetSocietyWithOffset: %w", err)
 	}
 	var societiesOut []*search.SocietySr
