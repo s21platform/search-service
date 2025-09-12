@@ -43,7 +43,7 @@ func (c *Client) SetUser(ctx context.Context, user *model.User) error {
 	}
 
 	req := esapi.IndexRequest{
-		Index:      "users",
+		Index:      "user_create",
 		DocumentID: user.UUID,
 		Body:       bytes.NewReader(data),
 		Refresh:    "wait_for",
@@ -78,7 +78,7 @@ func (c *Client) SearchUser(ctx context.Context,
 
 	res, err := c.es.Search(
 		c.es.Search.WithContext(ctx),
-		c.es.Search.WithIndex("users"),
+		c.es.Search.WithIndex("user_create"),
 		c.es.Search.WithBody(searchBody),
 		c.es.Search.WithTrackTotalHits(true),
 	)

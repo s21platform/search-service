@@ -1,4 +1,4 @@
-package users
+package user_update
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/s21platform/metrics-lib/pkg"
 	"github.com/s21platform/search-service/internal/config"
+	"github.com/s21platform/search-service/internal/model"
 	"github.com/s21platform/user-service/pkg/user"
 	"log"
 )
@@ -38,6 +39,20 @@ func (h *Handler) Handler(ctx context.Context, in []byte) error {
 		m.Increment("user_create.error")
 		log.Printf("failed to convert message: %v", err)
 		return err
+	}
+
+	user := model.User{
+		UUID:      msg.UserUuid,
+		Nickname:  msg.UserNickname,
+		Email:     msg.UserEmail,
+		FirstName: "Aleksey", //заглушка
+		LastName:  "Popov",   //заглушка
+	}
+
+	err = h.els.SetUser(ctx, &user)
+	if err != nil {
+		m.Increment("user_create.error")
+		return fmt.Errorf("failed to set user: %v", err)
 	}
 	return nil
 }

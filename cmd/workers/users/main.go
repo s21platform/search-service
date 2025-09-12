@@ -3,13 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/s21platform/search-service/internal/databus/user_update"
 
 	kafka_lib "github.com/s21platform/kafka-lib"
 	logger_lib "github.com/s21platform/logger-lib"
 	"github.com/s21platform/metrics-lib/pkg"
 	"github.com/s21platform/search-service/internal/clients/user"
 	"github.com/s21platform/search-service/internal/config"
-	"github.com/s21platform/search-service/internal/databus/users"
+	"github.com/s21platform/search-service/internal/databus/user_create"
 	"github.com/s21platform/search-service/internal/repository/elastic"
 )
 
@@ -33,15 +34,24 @@ func main() {
 	ctx := context.WithValue(context.Background(), config.KeyMetrics, metrics)
 	fmt.Println("Start server", cfg.Kafka)
 
-	consumerCfg := kafka_lib.DefaultConsumerConfig(cfg.Kafka.Host, cfg.Kafka.Port, cfg.Kafka.UserUpdate, "user.update")
-	NewUsersConsumer, err := kafka_lib.NewConsumer(consumerCfg, metrics)
+	consumerUserCreateCfg := kafka_lib.DefaultConsumerConfig(cfg.Kafka.Host, cfg.Kafka.Port, cfg.Kafka.UserCreate, "user.create")
+	consumerUserUpdateCfg := kafka_lib.DefaultConsumerConfig(cfg.Kafka.Host, cfg.Kafka.Port, cfg.Kafka.UserUpdate, "user.update")
+
+	UsersCreateConsumer, err := kafka_lib.NewConsumer(consumerUserCreateCfg, metrics)
 	if err != nil {
 		//logger.Error(fmt.Sprintf("failed to initialize kafka consumer: %v", err))
 		return
 	}
-	newUserHandler := users.New(elasticClient, userClient)
+	UsersUpdateConsumer, err := kafka_lib.NewConsumer(consumerUserUpdateCfg, metrics)
+	if err != nil {
+		//logger.Error(fmt.Sprintf("failed to initialize kafka consumer: %v", err))
+		return
+	}
+	newUserCreateHandler := user_create.New(elasticClient, userClient)
+	newUserUpdateHandler := user_update.New(elasticClient, userClient)
 
-	NewUsersConsumer.RegisterHandler(ctx, newUserHandler.Handler)
+	UsersCreateConsumer.RegisterHandler(ctx, newUserCreateHandler.Handler)
+	UsersUpdateConsumer.RegisterHandler(ctx, newUserUpdateHandler.Handler)
 
 	<-ctx.Done()
 }
