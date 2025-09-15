@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	logger_lib "github.com/s21platform/logger-lib"
 	"github.com/s21platform/metrics-lib/pkg"
 	"github.com/s21platform/search-service/internal/config"
 	"github.com/s21platform/search-service/internal/model"
 	"github.com/s21platform/user-service/pkg/user"
-	"log"
 )
 
 type Handler struct {
@@ -37,9 +37,11 @@ func (h *Handler) Handler(ctx context.Context, in []byte) error {
 	err := convertMessage(in, &msg)
 	if err != nil {
 		m.Increment("user_create.error")
-		log.Printf("failed to convert message: %v", err)
+		logger_lib.Error(ctx, fmt.Sprintf("failed to convert message: %v", err))
 		return err
 	}
+
+	fmt.Println("MSG:", msg)
 
 	user := model.User{
 		UUID:     msg.UserUuid,
@@ -50,6 +52,7 @@ func (h *Handler) Handler(ctx context.Context, in []byte) error {
 	err = h.els.SetUser(ctx, &user)
 	if err != nil {
 		m.Increment("user_create.error")
+		logger_lib.Error(ctx, fmt.Sprintf("failed to set user: %v", err))
 		return fmt.Errorf("failed to set user: %v", err)
 	}
 	return nil
