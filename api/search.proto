@@ -35,5 +35,6 @@ message UserInfo{
 
 message GetUserOut {
   repeated UserInfo users = 1;
+  int32 total = 2;
 }
 

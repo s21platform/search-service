@@ -41,8 +41,6 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/rogpeppe/go-internal v1.13.1 h1:KvO1DLK/DRN07sQ1LQKScxyZJuNnedQ5/wKSR38lUII=
 github.com/rogpeppe/go-internal v1.13.1/go.mod h1:uMEvuHeurkdAXX61udpOXGD/AzZDWNMNyH2VO9fmH0o=
-github.com/s21platform/kafka-lib v1.0.2 h1:0g7kU82tKDALkm7ayjtGE1IhvwZwXl/u20YFXgSf4tM=
-github.com/s21platform/kafka-lib v1.0.2/go.mod h1:tmLv0RuMll1rznHyvVU7fSKZCNcZuKdR28bq5mJfjB8=
 github.com/s21platform/kafka-lib v1.0.3 h1:AuPbkMugREzHosmIEjznZHmoheIncLBpPjVYAA3pQD0=
 github.com/s21platform/kafka-lib v1.0.3/go.mod h1:tmLv0RuMll1rznHyvVU7fSKZCNcZuKdR28bq5mJfjB8=
 github.com/s21platform/logger-lib v1.0.1 h1:CNNUoRZMFeczCHMFd+mi2u6+pJicrAvvDm7AiIISrZU=
@@ -53,8 +51,6 @@ github.com/s21platform/search-proto v0.0.10 h1:BbYUDgVaGbWuvxdQefg9exiN06xdMhXRO
 github.com/s21platform/search-proto v0.0.10/go.mod h1:mL1Jf2eqvWHPCefKdb/cjoXRI2Wg6hbHRLNeyw14SGk=
 github.com/s21platform/society-proto v0.0.15 h1:VdsRwhoAhqYpTNba/cis2WfVYMMk0LC8eVrN8dPR/a0=
 github.com/s21platform/society-proto v0.0.15/go.mod h1:wLBVqLkJplzBeE0T25OUJGR2uV4I1Ut97K2Ouhc3sTQ=
-github.com/s21platform/user-service v0.0.10 h1:ekHHgHI9JRcyBYdIsMj+kovMrEBzVnXrK5tFDDfcVx8=
-github.com/s21platform/user-service v0.0.10/go.mod h1:qF9Ap+TWVtsOHQKDww8dUg6FSRtVwVIr1XL94Hu1Knc=
 github.com/s21platform/user-service v0.0.11 h1:3X/tj9tJE2RZdmlXImbucMzcabr/nE37BUT8y9ZgFvY=
 github.com/s21platform/user-service v0.0.11/go.mod h1:qF9Ap+TWVtsOHQKDww8dUg6FSRtVwVIr1XL94Hu1Knc=
 github.com/segmentio/kafka-go v0.4.48 h1:9jyu9CWK4W5W+SroCe8EffbrRZVqAOkuaLd/ApID4Vs=

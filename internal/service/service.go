@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	logger_lib "github.com/s21platform/logger-lib"
 	"github.com/s21platform/search-service/internal/model"
 	"github.com/s21platform/search-service/pkg/search"
@@ -29,9 +30,49 @@ func (h *Handler) UserSearch(ctx context.Context, query string,
 
 func (h *Handler) GetUser(ctx context.Context, in *search.GetUserIn) (*search.GetUserOut, error) {
 	logger_lib.Info(ctx, "Search User")
-	var filters map[string]interface{}
+	filters := h.convertFilters(in.Filters)
 
-	return nil, nil
+	users, total, err := h.UserSearch(ctx, in.Query, filters, int(in.Page), int(in.PageSize))
+	if err != nil {
+		logger_lib.Error(ctx, "failed to UserSearch")
+		return nil, fmt.Errorf("failed to search user %w", err)
+	}
+	pbUsers := make([]*search.UserInfo, len(users))
+	for i, u := range users {
+		pbUsers[i] = &search.UserInfo{
+			UUID:     u.UUID,
+			Nickname: u.Nickname,
+		}
+	}
+	return &search.GetUserOut{
+		Users: pbUsers,
+		Total: total,
+	}, nil
+}
+
+func (h *Handler) convertFilters(protoFilters map[string]*search.Filter) map[string]interface{} {
+	filters := make(map[string]interface{})
+
+	for key, filter := range protoFilters {
+		if filter == nil {
+			continue
+		}
+
+		switch v := filter.GetValue().(type) {
+		case *search.Filter_StringValue:
+			filters[key] = v.StringValue
+		case *search.Filter_IntValue:
+			filters[key] = v.IntValue
+		case *search.Filter_BoolValue:
+			filters[key] = v.BoolValue
+		case *search.Filter_ArrayValue:
+			filters[key] = v.ArrayValue.GetValues()
+		default:
+			continue
+		}
+	}
+
+	return filters
 }
 
 //func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLimitIn) (*search.GetUserWithLimitOut, error) {
