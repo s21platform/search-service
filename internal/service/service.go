@@ -2,8 +2,9 @@ package service
 
 import (
 	"context"
-	"github.com/s21platform/search-proto/search"
+	logger_lib "github.com/s21platform/logger-lib"
 	"github.com/s21platform/search-service/internal/model"
+	"github.com/s21platform/search-service/pkg/search"
 )
 
 type Handler struct {
@@ -26,7 +27,12 @@ func (h *Handler) UserSearch(ctx context.Context, query string,
 	return users, total, nil
 }
 
-func (h *Handler) GetUser(ctx context.Context, in search.GetUser)
+func (h *Handler) GetUser(ctx context.Context, in *search.GetUserIn) (*search.GetUserOut, error) {
+	logger_lib.Info(ctx, "Search User")
+	var filters map[string]interface{}
+
+	return nil, nil
+}
 
 //func (h *Handler) GetUserWithLimit(ctx context.Context, in *search.GetUserWithLimitIn) (*search.GetUserWithLimitOut, error) {
 //	//logger := logger_lib.FromContext(ctx, config.KeyLogger)

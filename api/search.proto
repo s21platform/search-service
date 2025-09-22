@@ -28,7 +28,12 @@ message GetUserIn {
   int32 pageSize =4;
 }
 
-message GetUserOut {
+message UserInfo{
   string UUID = 1;
   string Nickname = 2;
 }
+
+message GetUserOut {
+  repeated UserInfo users = 1;
+}
+
