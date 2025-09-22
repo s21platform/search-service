@@ -7,13 +7,12 @@ toolchain go1.24.3
 require (
 	github.com/elastic/go-elasticsearch/v8 v8.18.0
 	github.com/ilyakaznacheev/cleanenv v1.5.0
-	github.com/s21platform/friends-proto v0.0.12
-	github.com/s21platform/kafka-lib v1.0.2
+	github.com/s21platform/kafka-lib v1.0.3
 	github.com/s21platform/logger-lib v1.0.1
 	github.com/s21platform/metrics-lib v0.0.9
 	github.com/s21platform/search-proto v0.0.10
 	github.com/s21platform/society-proto v0.0.15
-	github.com/s21platform/user-service v0.0.10
+	github.com/s21platform/user-service v0.0.11
 	google.golang.org/grpc v1.72.2
 )
 

@@ -7,17 +7,16 @@ import (
 	logger_lib "github.com/s21platform/logger-lib"
 	"github.com/s21platform/metrics-lib/pkg"
 	"github.com/s21platform/search-service/internal/config"
-	"github.com/s21platform/search-service/internal/model"
 	"github.com/s21platform/user-service/pkg/user"
+	"log"
 )
 
 type Handler struct {
 	els Elastic
-	uC  UserClient
 }
 
-func New(els Elastic, uC UserClient) *Handler {
-	return &Handler{els: els, uC: uC}
+func New(els Elastic) *Handler {
+	return &Handler{els: els}
 }
 
 func convertMessage(bMessage []byte, target interface{}) error {
@@ -41,19 +40,18 @@ func (h *Handler) Handler(ctx context.Context, in []byte) error {
 		return err
 	}
 
-	fmt.Println("MSG:", msg)
-
-	user := model.User{
-		UUID:     msg.UserUuid,
-		Nickname: msg.UserNickname,
-		Email:    msg.UserEmail,
+	var data map[string]interface{}
+	err = json.Unmarshal(msg.RawMessage, &data)
+	if err != nil {
+		log.Printf("Failed to unmarshal message: %v", err)
+		return err
 	}
 
-	err = h.els.SetUser(ctx, &user)
+	err = h.els.SetUser(ctx, data)
 	if err != nil {
 		m.Increment("user_create.error")
-		logger_lib.Error(ctx, fmt.Sprintf("failed to set user: %v", err))
-		return fmt.Errorf("failed to set user: %v", err)
+		logger_lib.Error(ctx, fmt.Sprintf("failed to set user in elastic: %v", err))
+		return fmt.Errorf("failed to set user in elastic: %v", err)
 	}
 	return nil
 }

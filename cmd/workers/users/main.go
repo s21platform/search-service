@@ -8,7 +8,6 @@ import (
 	kafka_lib "github.com/s21platform/kafka-lib"
 	logger_lib "github.com/s21platform/logger-lib"
 	"github.com/s21platform/metrics-lib/pkg"
-	"github.com/s21platform/search-service/internal/clients/user"
 	"github.com/s21platform/search-service/internal/config"
 	"github.com/s21platform/search-service/internal/databus/user_create"
 	"github.com/s21platform/search-service/internal/repository/elastic"
@@ -23,7 +22,6 @@ func main() {
 		logger_lib.Error(ctx, fmt.Sprintf("failed to create metrics object: %v", err))
 		log.Fatalf("failed to create metrics object: %v", err)
 	}
-	userClient := user.MustConnect(cfg)
 
 	elasticClient, err := elastic.MustConnect(cfg)
 	if err != nil {
@@ -33,7 +31,7 @@ func main() {
 
 	fmt.Println("cfg server", cfg.Kafka)
 
-	consumerUserCreateCfg := kafka_lib.DefaultConsumerConfig(cfg.Kafka.Host, cfg.Kafka.Port, cfg.Kafka.UserCreate, "user")
+	consumerUserCreateCfg := kafka_lib.DefaultConsumerConfig([]string{cfg.Kafka.Host}, []string{cfg.Kafka.Port}, cfg.Kafka.UserCreate, "search")
 	//consumerUserUpdateCfg := kafka_lib.DefaultConsumerConfig(cfg.Kafka.Host, cfg.Kafka.Port, cfg.Kafka.UserUpdate, "user")
 
 	UsersCreateConsumer, err := kafka_lib.NewConsumer(consumerUserCreateCfg, metrics)
@@ -46,7 +44,7 @@ func main() {
 	//	logger_lib.Error(ctx, fmt.Sprintf("failed to create user update consumer object: %v", err))
 	//	return
 	//}
-	newUserCreateHandler := user_create.New(elasticClient, userClient)
+	newUserCreateHandler := user_create.New(elasticClient)
 	//newUserUpdateHandler := user_update.New(elasticClient, userClient)
 
 	UsersCreateConsumer.RegisterHandler(ctx, newUserCreateHandler.Handler)

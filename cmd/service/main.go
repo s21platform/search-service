@@ -1,15 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"github.com/s21platform/metrics-lib/pkg"
+	"github.com/s21platform/search-service/internal/repository/elastic"
 	"log"
 	"net"
 
-	"github.com/s21platform/search-service/internal/clients/society"
-
 	logger_lib "github.com/s21platform/logger-lib"
-
-	"github.com/s21platform/search-service/internal/clients/user"
 
 	"github.com/s21platform/search-service/internal/infra"
 
@@ -21,16 +20,27 @@ import (
 
 func main() {
 	cfg := config.MustLoad()
-	logger := logger_lib.New(cfg.Logger.Host, cfg.Logger.Port, cfg.Service.Name, cfg.Platform.Env)
+	logger := logger_lib.New(cfg.Logger.Host, cfg.Logger.Port, "search_kafka", cfg.Platform.Env)
+	ctx := logger_lib.NewContext(context.Background(), logger)
+	metrics, err := pkg.NewMetrics(cfg.Metrics.Host, cfg.Metrics.Port, "search", cfg.Platform.Env)
+	_ = metrics
+	if err != nil {
+		logger_lib.Error(ctx, fmt.Sprintf("failed to create metrics object: %v", err))
+		log.Fatalf("failed to create metrics object: %v", err)
+	}
 
-	userClient := user.MustConnect(cfg)
-	societyClient := society.MustConnect(cfg)
-	service := service.New(userClient, societyClient)
+	elasticClient, err := elastic.MustConnect(cfg)
+	if err != nil {
+		logger_lib.Error(ctx, fmt.Sprintf("failed to connect to elastic search: %v", err))
+		return
+	}
+
+	serviceElastic := service.New(elasticClient)
 	server := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(infra.Verification),
 		grpc.ChainUnaryInterceptor(infra.Logger(logger)),
 	)
-	search.RegisterSearchServiceServer(server, service)
+	search.RegisterSearchServiceServer(server, serviceElastic)
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", cfg.Service.Port))
 	if err != nil {

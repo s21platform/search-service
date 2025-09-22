@@ -30,22 +30,23 @@ func MustConnect(cfg *config.Config) (*Client, error) {
 	return &Client{es: es}, nil
 }
 
-func (c *Client) SetUser(ctx context.Context, user *model.User) error {
-	if user.UUID == "" {
+func (c *Client) SetUser(ctx context.Context, data map[string]interface{}) error {
+	uuid, exist := data["Uuid"]
+	if !exist {
 		return fmt.Errorf("failed to user uuid is empty")
 	}
 	now := time.Now()
-	user.UpdatedAt = now
+	data["updatedAt"] = now
 
-	data, err := json.Marshal(user)
+	jsonData, err := json.Marshal(data)
 	if err != nil {
 		return fmt.Errorf("failed to marshal user: %v", err)
 	}
 
 	req := esapi.IndexRequest{
-		Index:      "user_create",
-		DocumentID: user.UUID,
-		Body:       bytes.NewReader(data),
+		Index:      "users",
+		DocumentID: uuid.(string),
+		Body:       bytes.NewReader(jsonData),
 		Refresh:    "wait_for",
 	}
 
