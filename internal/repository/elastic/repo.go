@@ -79,7 +79,7 @@ func (c *Client) SearchUser(ctx context.Context,
 
 	res, err := c.es.Search(
 		c.es.Search.WithContext(ctx),
-		c.es.Search.WithIndex("user_create"),
+		c.es.Search.WithIndex("users"),
 		c.es.Search.WithBody(searchBody),
 		c.es.Search.WithTrackTotalHits(true),
 	)

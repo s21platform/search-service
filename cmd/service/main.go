@@ -12,9 +12,9 @@ import (
 
 	"github.com/s21platform/search-service/internal/infra"
 
-	"github.com/s21platform/search-proto/search"
 	"github.com/s21platform/search-service/internal/config"
 	"github.com/s21platform/search-service/internal/service"
+	"github.com/s21platform/search-service/pkg/search"
 	"google.golang.org/grpc"
 )
 

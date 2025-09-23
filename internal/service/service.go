@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	logger_lib "github.com/s21platform/logger-lib"
-	"github.com/s21platform/search-service/internal/model"
 	"github.com/s21platform/search-service/pkg/search"
 )
 
@@ -17,22 +16,11 @@ func New(eS elasticService) *Handler {
 	return &Handler{eS: eS}
 }
 
-func (h *Handler) UserSearch(ctx context.Context, query string,
-	filters map[string]interface{},
-	page, pageSize int) ([]*model.User, int, error) {
-
-	users, total, err := h.eS.SearchUser(ctx, query, filters, page, pageSize)
-	if err != nil {
-		return nil, 0, err
-	}
-	return users, total, nil
-}
-
 func (h *Handler) GetUser(ctx context.Context, in *search.GetUserIn) (*search.GetUserOut, error) {
 	logger_lib.Info(ctx, "Search User")
 	filters := h.convertFilters(in.Filters)
 
-	users, total, err := h.UserSearch(ctx, in.Query, filters, int(in.Page), int(in.PageSize))
+	users, total, err := h.eS.SearchUser(ctx, in.Query, filters, int(in.Page), int(in.PageSize))
 	if err != nil {
 		logger_lib.Error(ctx, "failed to UserSearch")
 		return nil, fmt.Errorf("failed to search user %w", err)
@@ -40,13 +28,13 @@ func (h *Handler) GetUser(ctx context.Context, in *search.GetUserIn) (*search.Ge
 	pbUsers := make([]*search.UserInfo, len(users))
 	for i, u := range users {
 		pbUsers[i] = &search.UserInfo{
-			UUID:     u.UUID,
+			Uuid:     u.UUID,
 			Nickname: u.Nickname,
 		}
 	}
 	return &search.GetUserOut{
 		Users: pbUsers,
-		Total: total,
+		Total: int32(total),
 	}, nil
 }
 

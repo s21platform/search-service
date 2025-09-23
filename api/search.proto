@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
-
 option go_package = "pkg/search";
 
 service SearchService {
@@ -29,8 +27,8 @@ message GetUserIn {
 }
 
 message UserInfo{
-  string UUID = 1;
-  string Nickname = 2;
+  string uuid = 1;
+  string nickname = 2;
 }
 
 message GetUserOut {
