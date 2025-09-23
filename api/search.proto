@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option go_package = "pkg/search";
+
+service SearchService {
+  rpc GetUser (GetUserIn) returns (GetUserOut);
+}
+
+message StringArray {
+  repeated string values = 1;
+}
+
+message Filter {
+  oneof value{
+    string string_value = 1;
+    int32 int_value = 2;
+    bool bool_value = 3;
+    StringArray array_value = 4;
+  }
+}
+
+message GetUserIn {
+  string query = 1;
+  map<string, Filter> filters = 2;
+  int32 page = 3;
+  int32 pageSize =4;
+}
+
+message UserInfo{
+  string uuid = 1;
+  string nickname = 2;
+}
+
+message GetUserOut {
+  repeated UserInfo users = 1;
+  int32 total = 2;
+}
+
